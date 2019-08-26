@@ -14,9 +14,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
- 
+using Cdc.mmg.validator.WebApi.Formatters;
 using AutoMapper;
- 
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace Cdc.mmg.validator.WebApi
 {
@@ -36,6 +36,18 @@ namespace Cdc.mmg.validator.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // If using Kestrel:
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            // If using IIS:
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -63,10 +75,14 @@ namespace Cdc.mmg.validator.WebApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-           
+            services.AddMvc(options =>
+            {
+                options.InputFormatters.Insert(0, new TextPlainInputFormatter());
+            });
+
 
             // register the repository
-           // services.AddScoped<IValueSetRepository, ValueSetRepository>();
+            // services.AddScoped<IValueSetRepository, ValueSetRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

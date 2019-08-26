@@ -9,7 +9,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>Copyright © 2018 Erik Knudsen</Copyright>
     <PackageLicenseUrl>https://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/erik1066/vocabulary-api</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Kodeistan/mmg-validator-api</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Version>0.0.1</Version>
     <IsTestProject>false</IsTestProject>
@@ -26,15 +26,27 @@
   <ItemGroup>
     <Folder Include="Entities\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Models\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview8.19405.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview8.19405.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0-preview8.19405.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0-preview8-19413-06" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc2" />
     <PackageReference Include="AutoMapper" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HL7-dotnetcore">
+      <HintPath>bin\Debug\netcoreapp3.0\HL7-dotnetcore.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
