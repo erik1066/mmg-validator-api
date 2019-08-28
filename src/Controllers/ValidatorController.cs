@@ -8,6 +8,10 @@ using System.IO;
 using HL7.Dotnetcore;
 using Newtonsoft.Json.Linq;
 using Cdc.mmg.validator.WebApi.Models;
+using System.Text;
+using System.Runtime.Serialization.Json;
+using System.Net.Http;
+
 namespace Cdc.mmg.validator.WebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -25,6 +29,7 @@ namespace Cdc.mmg.validator.WebApi.Controllers
         {
             string path = @"Content\mmg.json";
             FileStream fileStream;
+            List<string> ErrorList = new List<string>();
             if (System.IO.File.Exists(path))
             {
                   fileStream = System.IO.File.OpenRead(path);
@@ -38,48 +43,7 @@ namespace Cdc.mmg.validator.WebApi.Controllers
                     List<DataElement> mmgElementList = new List<DataElement>();
                     foreach (var element in elements)
                     {
-                        // list.Add(element.ToString());
-
-                        DataElement DataElement = new DataElement();
-
-                        DataElement.CodeSystem = element["codeSystem"].ToString();
-                        DataElement.DataType = element["dataType"].ToString();
-                        DataElement.HL7Cardinality = element["hL7Cardinality"].ToString();
-
-                        DataElement.HL7DataType = element["hL7DataType"].ToString();
-                        DataElement.HL7Identifier = element["hL7Identifier"].ToString();
-                        //   DataElement.HL7LiteralFieldValues = element["HL7LiteralFieldValues"].ToString();
-
-                        DataElement.HL7OBRParent =int.Parse( element["hL7OBRParent"].ToString());
-                        DataElement.HL7RepeatingGroupElement = element["hL7RepeatingGroupElement"].ToString();
-                        DataElement.HL7SegmentComponentPosition =int.Parse( element["hL7SegmentComponentPosition"].ToString());
-
-                        DataElement.HL7SegmentFieldPosition =int.Parse( element["hL7SegmentFieldPosition"].ToString());
-                        DataElement.HL7Usage = element["hL7Usage"].ToString();
-                        DataElement.Id = Guid.Parse( element["id"].ToString());
-
-                        /////
-                        DataElement.Identifier = element["identifier"].ToString();
-                        DataElement.Name = element["name"].ToString();
-                      //  DataElement.ValueSet = element["hL7SegmentComponentPosition"].ToString());
-
-                        DataElement.IsUnitOfMeasure = bool.Parse(element["isUnitOfMeasure"].ToString());
-                        DataElement.Ordinal = int.Parse(element["ordinal"].ToString());
-                       // DataElement.RelatedDataElementId = Guid.Parse(element["relatedDataElementId"].ToString());
-                        DataElement.PhinVariableCodeSystem = element["phinVariableCodeSystem"].ToString();
-                        DataElement.Repetitions = int.Parse(element["repetitions"].ToString());
-                        DataElement.ValueSetName = element["valueSetName"].ToString();
-
-                        //DataElement.HL7SegmentType = int.Parse(element["hL7SegmentFieldPosition"].ToString());
-                        DataElement.ValueSetOID = element["valueSetOID"].ToString();
-                        DataElement.ValueSetCode =  element["valueSetOID"].ToString();
-                        DataElement.HL7DataType = element["hL7DataType"].ToString();
-                        DataElement.HL7Usage =  element["hL7Usage"].ToString();
-                        mmgElementList.Add(DataElement);
-
-
-
-
+                          mmgElementList.Add(SetDataElement( element));
                     }
 
                     Message message = new Message(HL7);
@@ -91,22 +55,40 @@ namespace Cdc.mmg.validator.WebApi.Controllers
                     //string messageStructure = message.MessageStructure;
                    // List of Segments
                     List<Segment> segList = message.Segments("OBX");
+                    var FieldValue = string.Empty;
                     // selecting a specific segment 
                     foreach (var segment in segList)
                     {
-                        var FieldValue = segment.Fields(3).Components(1).Value;
-                         
+                    try
+                    { 
+                          FieldValue = segment.Fields(3).Components(1).Value; //   Api call
+                    }
+                        catch (Exception ex)
+                    {
+
+                        ErrorList.Add("Error:MMG section does not exist for HL7 Identifier: " + FieldValue);
+                    }
 
 
-                        try
+                    try
                         {
-                            var Item = mmgElementList.Where(x => x.HL7Identifier == FieldValue).ToList();
+                             
+                            
+                                var Item = mmgElementList.Where(x => x.hl7Identifier == FieldValue).Single();
 
-                        
+                                // validate data type 
+                                ErrorList.AddRange(ValidateDataType(FieldValue, segment, Item));
+
+                           
+
+
+                            //Validate codes using API
+
+
                         }
                         catch (Exception ex) {
 
-
+                            ErrorList.Add("Error:TBD: " + FieldValue);
                         }
                        
 
@@ -118,23 +100,146 @@ namespace Cdc.mmg.validator.WebApi.Controllers
                 }
             }
 
+            if (ErrorList.Count()>0)
+            {
+
+                return Ok(ErrorList);
+            }
+            else {
+                return Ok("HL7 message is valid!");
+            }
             
             
             
-            return Ok("Done");
+        }
+        
+      
+        private DataElement SetDataElement(  JToken element)
+        {
+            DataElement DataElement = new DataElement();
+
+            
+            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(element.ToString())))
+            {
+
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(DataElement));
+                DataElement = (DataElement)deserializer.ReadObject(ms);
+
+                
+            }
+            return DataElement;
         }
 
-        // PUT: api/Validator/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        private  List<string> ValidateDataType(  string FieldValue, Segment segment, DataElement Item)
+        {
+            List<string> ErrorList = new List<string>();
+            string DataType = segment.Fields(2).Value.ToString();
+            if (DataType != Item.hl7DataType)
+            {
 
-        // DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
-        
+                ErrorList.Add("Error: Invalid Data Type. HL7 Identifier: " + FieldValue);
+            }
+
+
+            switch (DataType)
+            {
+                case "NM":  //Validate numeric values
+                    int numeric;
+                    if (!int.TryParse(segment.Fields(5).Value, out numeric))
+                    {
+                        ErrorList.Add("Error: Invalid numeric value. HL7 Identifier: " + FieldValue);
+                    }
+                    break;
+                case "CWE":  //Validate codes using API
+                    var ValueSetCode = Item.valueSetCode;
+                    var ConceptCode = segment.Fields(5).Components(1).Value;
+                    var RelatedIndicator= segment.Fields(4).Components(1).Value;
+
+
+                    if (string.IsNullOrEmpty(RelatedIndicator))
+                    {
+
+                        if (string.IsNullOrEmpty(ValueSetCode))
+                        {
+                            ErrorList.Add("Error: Value set code is required: HL7 Identifier: " + FieldValue);
+                        }
+                        else
+                        {
+
+                            //Call 
+                            try
+                            {
+                                using (var _client = new HttpClient())
+                                {
+
+                                    var httpContent = new StringContent("", Encoding.UTF8, "application/json");
+
+
+                                    var uri = "http://localhost:50346/api/valuesetconceptcollection/cdc?valuesetversionnumber=latest&conceptcode=" + ConceptCode + "&valuesetcode=" + ValueSetCode;
+                                    var response1 = _client.GetAsync(uri);
+
+                                    response1.Wait();
+                                    var result1 = response1.Result;
+                                    if (!result1.IsSuccessStatusCode)
+                                    {
+                                        ErrorList.Add("Error: Value set Not found. HL7 Identifier: " + FieldValue + "/ConceptCode:" + ConceptCode + "/ValueSetCode:" + ValueSetCode);
+                                    }
+                                    else
+                                    {
+                                        string Json = result1.Content.ReadAsStringAsync().Result;
+                                        var Content = JArray.Parse(Json);
+                                        //OBX-5.2 and OBX-5.3 values (the “Yes” and “HL70136” values from the HL7 message) against the “cdcPreferredDesignation” and “hl70396Identifier” properties in the API’s Json response.
+                                        //OBX|38|CWE|75204-8^Prenatal Visit Indicator^LN||Y^Yes^HL70136||||||F
+
+                                        var cdcPreferredDesignation = Content[0]["cdcPreferredDesignation"].ToString();
+                                        var hl70396Identifier = Content[0]["hl70396Identifier"].ToString();
+
+                                        var OBX_5_2 = segment.Fields(5).Components(2).Value;
+                                        var OBX_5_3 = segment.Fields(5).Components(3).Value;
+
+                                        if (OBX_5_2.ToLower() != cdcPreferredDesignation.ToLower())
+                                        {
+                                            ErrorList.Add("Error: Invalid cdcPreferredDesignation . HL7 Identifier: " + FieldValue + "/ConceptCode:" + ConceptCode + "/ValueSetCode:" + ValueSetCode);
+                                        }
+                                        if (OBX_5_3.ToLower() != hl70396Identifier.ToLower())
+                                        {
+                                            ErrorList.Add("Error:Invalid  hl70396Identifier. HL7 Identifier: " + FieldValue + "/ConceptCode:" + ConceptCode + "/ValueSetCode:" + ValueSetCode);
+                                        }
+
+                                    }
+
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+
+                                ErrorList.Add("Error: Value set Api call. HL7 Identifier: " + FieldValue + "/ConceptCode:" + ConceptCode + "/ValueSetCode:" + ValueSetCode);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //handle related
+                        var RelatedValue = segment.Fields(5).Components(1).Value;
+
+                    var ConceptItem =   Item.valueSet.concepts.Where(x => x.code == RelatedValue).Single();
+
+                        if (ConceptItem.name.ToLower() != segment.Fields(5).Components(2).Value.ToLower()) {
+
+                            ErrorList.Add("Error: Invalid value set name. Concept code: " + RelatedValue);
+                        }
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine("Other");
+                    break;
+            }
+
+            return ErrorList;
+        }
+
+       
+
     }
 }

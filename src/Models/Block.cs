@@ -113,9 +113,9 @@ namespace Cdc.mmg.validator.WebApi.Models
         {
             if (!Elements.Contains(element) && 
                 Elements
-                    .Where(e => e.HL7OBRParent.HasValue == false || e.HL7OBRParent.Value <= 1)
-                    .Where(e => e.Identifier.Equals(element.Identifier, StringComparison.OrdinalIgnoreCase))
-                    .Where(e => e.HL7Identifier.Equals(element.HL7Identifier))
+                    .Where(e => e.hl7OBRParent.HasValue == false || e.hl7OBRParent.Value <= 1)
+                    .Where(e => e.identifier.Equals(element.identifier, StringComparison.OrdinalIgnoreCase))
+                    .Where(e => e.hl7Identifier.Equals(element.hl7Identifier))
                     .FirstOrDefault() == null)
             {
                 // no matching DE found, add it to the right block
@@ -123,7 +123,7 @@ namespace Cdc.mmg.validator.WebApi.Models
             }
             else
             {
-                throw new InvalidOperationException($"Unable to add element '{element.Identifier}' to block '{Name}' - the element already exists! Check to make you're not adding a different element with the same identifier.");
+                throw new InvalidOperationException($"Unable to add element '{element.identifier}' to block '{Name}' - the element already exists! Check to make you're not adding a different element with the same identifier.");
             }
         }
     }

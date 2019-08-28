@@ -151,9 +151,9 @@ namespace Cdc.mmg.validator.WebApi.Models
                 {
                     foreach (var element in block.Elements)
                     {
-                        if (element.ValueSet != null && !valueSets.Contains(element.ValueSet))
+                        if (element.valueSet != null && !valueSets.Contains(element.valueSet))
                         {
-                            valueSets.Add(element.ValueSet);
+                            valueSets.Add(element.valueSet);
                         }
                     }
                 }
@@ -175,8 +175,8 @@ namespace Cdc.mmg.validator.WebApi.Models
         public void Add(Block block, DataElement element)
         {
             if (Elements
-                .Where(e => e.Identifier.Equals(element.Identifier, StringComparison.OrdinalIgnoreCase))
-                .Where(e => e.HL7Identifier.Equals(element.HL7Identifier))
+                .Where(e => e.identifier.Equals(element.identifier, StringComparison.OrdinalIgnoreCase))
+                .Where(e => e.hl7Identifier.Equals(element.hl7Identifier))
                 .FirstOrDefault() == null)
             {
                 // no matching DE found, add it to the right block
@@ -184,7 +184,7 @@ namespace Cdc.mmg.validator.WebApi.Models
             }
             else
             {
-                throw new InvalidOperationException($"Cannot add element '{element.Identifier}' to this guide; element already exists!");
+                throw new InvalidOperationException($"Cannot add element '{element.identifier}' to this guide; element already exists!");
             }
         }
 
@@ -212,7 +212,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// <returns>The block that the element belongs to</returns>
         public Block GetBlock(DataElement element)
         {
-            return Blocks.FirstOrDefault(b => b.Elements.FirstOrDefault(e => e.Id.Equals(element.Id)) != null);
+            return Blocks.FirstOrDefault(b => b.Elements.FirstOrDefault(e => e.id.Equals(element.id)) != null);
         }
     }
 }

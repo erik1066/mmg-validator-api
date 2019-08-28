@@ -15,18 +15,18 @@ namespace Cdc.mmg.validator.WebApi.Models
     [DebuggerDisplay("{Identifier} : {Name}")]
     public sealed class DataElement //: IEntity, IVersionedEntity
     {
-        private string _HL7Usage = string.Empty;
+        private string _hl7Usage = string.Empty;
 
         /// <summary>
         /// Gets/sets the PHIN data element identifier. Examples: DEM197, NOT115
         /// </summary>
         [RegularExpression(@"^([\-\.a-zA-Z0-9:,'\(\)/ ÇüéâäàåçêëèïîíìÄÅÉæÆôöòûùÖÜáíóúñÑÀÁÂÃÈÊËÌÍÎÏÐÒÓÔÕØÙÚÛÝßãðõøýþÿ]+)$", ErrorMessage = "Data element {0} field contains invalid characters")]
-        public string Identifier { get; set; } = string.Empty;//
+        public string identifier { get; set; } = string.Empty;//
 
         /// <summary>
         /// Gets/sets the internal ID of the data element.
         /// </summary>
-        public Guid Id { get; set; }//
+        public Guid id { get; set; }//
 
         
         /// <summary>
@@ -35,7 +35,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// </summary>
         [Required]
         [RegularExpression(@"^([\-\.a-zA-Z0-9:,'’®\(\)/ ÇüéâäàåçêëèïîíìÄÅÉæÆôöòûùÖÜáíóúñÑÀÁÂÃÈÊËÌÍÎÏÐÒÓÔÕØÙÚÛÝßãðõøýþÿ]+)$", ErrorMessage = "Data element {0} field contains invalid characters")]
-        public string Name { get; set; } = string.Empty;//
+        public string name { get; set; } = string.Empty;//
 
       
         /// <summary>
@@ -43,14 +43,14 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  types are Coded, Numeric, Date or Date/time, and Text.
         /// </summary>
        // public DataType DataType { get; set; } = DataType.Text;//
-        public string DataType { get; set; } //
+        public string dataType { get; set; } //
 
         /// <summary>
         /// Gets/sets the PHIN VADS value set this data element has been assigned. 
         ///  This property should remain null for all data elements other than those
         ///  of type 'Coded'.
         /// </summary>
-        public ValueSet ValueSet { get; set; }//
+        public ValueSet valueSet { get; set; }//
 
         
 
@@ -58,12 +58,12 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// Gets/sets whether this data element represents a unit of measure, such as 
         ///  age in days, weight in kilograms, height in inches, etc.
         /// </summary>
-        public bool IsUnitOfMeasure { get; set; } = false;//
+        public bool isUnitOfMeasure { get; set; } = false;//
 
         /// <summary>
         /// Gets/sets the order this element appears in a block
         /// </summary>
-        public int Ordinal { get; set; }//
+        public int ordinal { get; set; }//
 
          
         /// <summary>
@@ -76,7 +76,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  test message generation and sample segment generation to correctly place the 
         ///  together.
         /// </summary>
-        public Guid? RelatedDataElementId { get; set; } = null;//
+        public Guid? relatedDataElementId { get; set; } = null;//
 
         /// <summary>
         /// Gets/sets the code system from which the PHIN data element identifier is drawn.
@@ -84,7 +84,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// </summary>
         // [RegularExpression(@"^([a-zA-Z0-9\-]+)$")]
         [RegularExpression(@"^([\-\.a-zA-Z0-9:,'\(\)/ ÇüéâäàåçêëèïîíìÄÅÉæÆôöòûùÖÜáíóúñÑÀÁÂÃÈÊËÌÍÎÏÐÒÓÔÕØÙÚÛÝßãðõøýþÿ]+)$", ErrorMessage = "Data element {0} field contains invalid characters")]
-        public string PhinVariableCodeSystem { get; set; } = string.Empty;//
+        public string phinVariableCodeSystem { get; set; } = string.Empty;//
 
         /// <summary>
         /// Gets/sets the Data Element Identifier to be sent in HL7 message. Examples: null, 
@@ -92,7 +92,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// </summary>
         [Required]
         [RegularExpression(@"^([\-\.a-zA-Z0-9:,_'\(\)/ ÇüéâäàåçêëèïîíìÄÅÉæÆôöòûùÖÜáíóúñÑÀÁÂÃÈÊËÌÍÎÏÐÒÓÔÕØÙÚÛÝßãðõøýþÿ]+)$", ErrorMessage = "Data element {0} field contains invalid characters")]
-        public string HL7Identifier { get; set; } = string.Empty;///
+        public string hl7Identifier { get; set; } = string.Empty;///
 
         /// <summary>
         /// Gets/sets the code system from which the data element identifier is drawn (e.g. 
@@ -101,7 +101,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  datatypes in the message. Example values: LN, N/A, PHINQUESTION
         /// </summary>
         [RegularExpression(@"^([\-\.a-zA-Z0-9:,'\(\)/ ÇüéâäàåçêëèïîíìÄÅÉæÆôöòûùÖÜáíóúñÑÀÁÂÃÈÊËÌÍÎÏÐÒÓÔÕØÙÚÛÝßãðõøýþÿ]+)$", ErrorMessage = "Data element {0} field contains invalid characters")]
-        public string CodeSystem { get; set; } = string.Empty;//
+        public string codeSystem { get; set; } = string.Empty;//
 
          
 
@@ -111,14 +111,14 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  element. Zero and negative values are disallowed. Set to Int32.MaxValue to allow for
         ///  unlimited repetitions.
         /// </summary>
-        public int Repetitions { get; set; } = 1;//
+        public int repetitions { get; set; } = 1;//
 
         /// <summary>
         /// Gets/sets the name of the VADS value set. For example, "Yes No Unknown (YNU)". This
         ///  should be set to string.Empty if the data element does not have a 'coded' data type.
         /// </summary>
         [DefaultValue("")]
-        public string ValueSetName { get; set; } = string.Empty;//
+        public string valueSetName { get; set; } = string.Empty;//
 
          
         /// <summary>
@@ -128,12 +128,12 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  where there's a conformance statement like this: "CONFORMANCE STATEMENT: OBX-6 SHALL 
         ///  contain the literal value 'd^day^UCUM'"
         /// </summary>
-        public IDictionary<int, string> HL7LiteralFieldValues { get; set; } = new Dictionary<int, string>();//
+        public IDictionary<int, string> hl7LiteralFieldValues { get; set; } = new Dictionary<int, string>();//
 
         /// <summary>
         /// Gets/sets the OBR segment that this 
         /// </summary>
-        public int? HL7OBRParent { get; set; } = 1;//
+        public int? hl7OBRParent { get; set; } = 1;//
 
         /// <summary>
         /// Gets/sets the type of HL7 segment to which this data element belongs
@@ -149,13 +149,13 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  related data element ID should point to the ID of the data element whose values
         ///  should go into OBX-5.
         /// </summary>
-        public int HL7SegmentFieldPosition { get; set; } = -1;//
+        public int hl7SegmentFieldPosition { get; set; } = -1;//
 
         /// <summary>
         /// Gets/sets the ordinal of the component within an HL7 field where this data element's
         ///  data can be located.
         /// </summary>
-        public int? HL7SegmentComponentPosition { get; set; } = -1;//
+        public int? hl7SegmentComponentPosition { get; set; } = -1;//
 
          
 
@@ -163,13 +163,13 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// Gets/sets the OID associated with the VADS value set. should be set to string.Empty
         ///  if the data element does not have a 'coded' data type.
         /// </summary>
-        public string ValueSetOID { get; set; } = string.Empty;//
+        public string valueSetOID { get; set; } = string.Empty;//
 
         /// <summary>
         /// Gets/sets the ID of the VADS value set. For example, "PHVS_YesNoUnknown_CDC". This
         ///  should be set to string.Empty if the data element does not have a 'Coded' data type.
         /// </summary>
-        public string ValueSetCode { get; set; } = string.Empty;//
+        public string valueSetCode { get; set; } = string.Empty;//
 
          
         /// <summary>
@@ -178,7 +178,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  on the type of data being passed. The specific HL7 datatype allowed in the field 
         ///  is consistent with the HL7 2.5.1 Standard for this message.
         /// </summary>
-        public string HL7DataType { get; set; } = string.Empty;//
+        public string hl7DataType { get; set; } = string.Empty;//
 
         /// <summary>
         /// Indicates if the field is required, optional, or conditional in a segment. The 
@@ -187,21 +187,21 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  message receiver must be prepared to process the variable, but it may be absent 
         ///  from a particular message instance. O – Optional. May optionally be populated.     
         /// </summary>
-        public string HL7Usage //
+        public string hl7Usage //
         {
             get 
             {
-                return _HL7Usage;
+                return _hl7Usage;
             }
             set
             {
                 if (string.IsNullOrEmpty(value) || value.Equals("R") || value.Equals("RE") || value.Equals("O") || value.Equals("C(R/RE)") || value.Equals("R if the NTE segment is used") || value.Equals("R if the SPM segment is used"))
                 {
-                    _HL7Usage = value;
+                    _hl7Usage = value;
                 }
                 else 
                 {
-                    throw new ArgumentOutOfRangeException(nameof(HL7Usage));
+                    throw new ArgumentOutOfRangeException(nameof(hl7Usage));
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  level and does not indicate whether the data element is part of a repeating group.
         ///  Examples: [0..1], [1..1], [0..*], [2..2]
         /// </summary>
-        public string HL7Cardinality { get; set; } = string.Empty;//
+        public string hl7Cardinality { get; set; } = string.Empty;//
 
         
         /// <summary>
@@ -229,7 +229,7 @@ namespace Cdc.mmg.validator.WebApi.Models
         ///  relationship does not apply to the elements in the repeating group.  NO indicates that this 
         ///  variable is not considered part of a repeating group and will not be processed as such.
         /// </summary>
-        public string HL7RepeatingGroupElement { get; set; } = string.Empty;//
+        public string hl7RepeatingGroupElement { get; set; } = string.Empty;//
 
     }
 }

@@ -14,42 +14,42 @@ namespace Cdc.mmg.validator.WebApi.Models
         /// <summary>
         /// Gets/sets the ID of this value set
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
         /// <summary>
         /// Gets/sets the VADS code
         /// </summary>
-        public string Code { get; set; }
+        public string code { get; set; }
 
         /// <summary>
         /// Gets/sets the VADS value set name
         /// </summary>
-        public string Name { get; set; }
+        public string name { get; set; }
 
         /// <summary>
         /// Gets/sets the VADS value set version number
         /// </summary>
-        public int Version { get; set; }
+        public int version { get; set; }
 
         /// <summary>
         /// Gets/sets the status of this version of the value set
         /// </summary>
-        public string VersionStatusCode { get; set; }
+        public string versionvtatuscode { get; set; }
 
         /// <summary>
         /// Gets/sets the OID for this value set
         /// </summary>
-        public string OID { get; set; }
+        public string oid { get; set; }
 
         /// <summary>
         /// Gets/sets the definition of this value set
         /// </summary>
-        public string Definition { get; set; }
+        public string definition { get; set; }
 
         /// <summary>
         /// Gets/sets the collection of value set concepts associated with this value set
         /// </summary>
-        //public List<ValueSetConcept> Concepts { get; set; }
+        public List<ValueSetConcept> concepts { get; set; }
 
         //public override bool Equals(object obj)
         //{
