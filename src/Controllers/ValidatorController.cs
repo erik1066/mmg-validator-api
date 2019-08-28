@@ -11,6 +11,7 @@ using Cdc.mmg.validator.WebApi.Models;
 using System.Text;
 using System.Runtime.Serialization.Json;
 using System.Net.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Cdc.mmg.validator.WebApi.Controllers
 {
@@ -18,8 +19,13 @@ namespace Cdc.mmg.validator.WebApi.Controllers
     [ApiController]
     public class ValidatorController : ControllerBase
     {
-      
-        
+        readonly IConfiguration _configuration;
+        public ValidatorController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+
         // POST: api/Validator/mmgId
 
         [Produces("application/json")]
@@ -74,10 +80,12 @@ namespace Cdc.mmg.validator.WebApi.Controllers
                         {
                              
                             
-                                var Item = mmgElementList.Where(x => x.hl7Identifier == FieldValue).Single();
+                                var Item = mmgElementList.Where(x => x.hL7Identifier == FieldValue).Single();
 
-                                // validate data type 
-                                ErrorList.AddRange(ValidateDataType(FieldValue, segment, Item));
+
+                            // validate data type 
+                                var   List = ValidateDataType(FieldValue, segment, Item);
+                                ErrorList.AddRange(List);
 
                            
 
@@ -116,25 +124,43 @@ namespace Cdc.mmg.validator.WebApi.Controllers
       
         private DataElement SetDataElement(  JToken element)
         {
+
             DataElement DataElement = new DataElement();
 
             
+
+
+
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(element.ToString())))
             {
 
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(DataElement));
                 DataElement = (DataElement)deserializer.ReadObject(ms);
 
-                
+
             }
             return DataElement;
         }
+
+        //private ValueSet GetValueSet(JToken element)
+        //{
+        //    ValueSet ValueSet = new ValueSet();
+        //    using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(element.ToString())))
+        //    {
+
+        //        DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ValueSet));
+        //        ValueSet = (ValueSet)deserializer.ReadObject(ms);
+
+
+        //    }
+        //    return ValueSet;
+        //}
 
         private  List<string> ValidateDataType(  string FieldValue, Segment segment, DataElement Item)
         {
             List<string> ErrorList = new List<string>();
             string DataType = segment.Fields(2).Value.ToString();
-            if (DataType != Item.hl7DataType)
+            if (DataType != Item.hL7DataType)
             {
 
                 ErrorList.Add("Error: Invalid Data Type. HL7 Identifier: " + FieldValue);
@@ -175,7 +201,10 @@ namespace Cdc.mmg.validator.WebApi.Controllers
                                     var httpContent = new StringContent("", Encoding.UTF8, "application/json");
 
 
-                                    var uri = "http://localhost:50346/api/valuesetconceptcollection/cdc?valuesetversionnumber=latest&conceptcode=" + ConceptCode + "&valuesetcode=" + ValueSetCode;
+
+                                    
+
+                                    var uri = _configuration["Vocab_Api"] + ConceptCode + "&valuesetcode=" + ValueSetCode;
                                     var response1 = _client.GetAsync(uri);
 
                                     response1.Wait();

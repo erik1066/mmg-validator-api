@@ -113,9 +113,9 @@ namespace Cdc.mmg.validator.WebApi.Models
         {
             if (!Elements.Contains(element) && 
                 Elements
-                    .Where(e => e.hl7OBRParent.HasValue == false || e.hl7OBRParent.Value <= 1)
+                    .Where(e => e.hL7OBRParent.HasValue == false || e.hL7OBRParent.Value <= 1)
                     .Where(e => e.identifier.Equals(element.identifier, StringComparison.OrdinalIgnoreCase))
-                    .Where(e => e.hl7Identifier.Equals(element.hl7Identifier))
+                    .Where(e => e.hL7Identifier.Equals(element.hL7Identifier))
                     .FirstOrDefault() == null)
             {
                 // no matching DE found, add it to the right block
