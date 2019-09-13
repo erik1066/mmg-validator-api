@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// Represents a named block of data elements within a message mapping guide

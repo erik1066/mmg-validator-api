@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 //using CDC.MMGAT.WebUI.Data;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// Represents a single data element within a message mapping guide

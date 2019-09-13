@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using HL7.Dotnetcore;
 using Newtonsoft.Json.Linq;
-using Cdc.mmg.validator.WebApi.Models;
+using Cdc.Mmg.Validator.WebApi.Models;
 using System.Text;
 using System.Runtime.Serialization.Json;
 using System.Net.Http;
 
-namespace Cdc.mmg.validator.WebApi.Controllers
+namespace Cdc.Mmg.Validator.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

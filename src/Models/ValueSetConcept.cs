@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// Represents a "code" and "code name" pair from a public health vocabulary

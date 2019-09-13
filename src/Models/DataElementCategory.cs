@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// Broad categories to which data elements can be grouped into

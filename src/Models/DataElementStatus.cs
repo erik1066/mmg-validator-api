@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// Represents the status of a data element

@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace Cdc.mmg.validator.WebApi.Formatters
+namespace Cdc.Mmg.Validator.WebApi.Formatters
 {
 #pragma warning disable 1591 // disables the warnings about missing Xml code comments
     public sealed class TextPlainInputFormatter : TextInputFormatter

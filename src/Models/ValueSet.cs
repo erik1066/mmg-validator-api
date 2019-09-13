@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 //using CDC.MMGAT.WebUI.Data;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// Represents a PHIN VADS value set

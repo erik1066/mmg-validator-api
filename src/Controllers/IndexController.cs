@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cdc.mmg.validator.WebApi.Controllers
+namespace Cdc.Mmg.Validator.WebApi.Controllers
 {
     /// <summary>
     /// Index route controller class

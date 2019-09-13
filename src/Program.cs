@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Cdc.mmg.validator.WebApi
+namespace Cdc.Mmg.Validator.WebApi
 {
     public class Program
     {

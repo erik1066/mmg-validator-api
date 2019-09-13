@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 //using CDC.MMGAT.WebUI.Data;
 using Newtonsoft.Json;
 
-namespace Cdc.mmg.validator.WebApi.Models
+namespace Cdc.Mmg.Validator.WebApi.Models
 {
     /// <summary>
     /// A class representing a message mapping guide.
