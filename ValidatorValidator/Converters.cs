@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using Cdc.mmg.validator.WebApi.Controllers;
+using Cdc.Mmg.Validator.WebApi.Controllers;
 
 namespace ValidatorValidator
 {
