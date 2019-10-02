@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cdc.mmg.validator.WebApi.Models;
 //using CDC.MMGAT.WebUI.Data;
 
 namespace Cdc.Mmg.Validator.WebApi.Models
@@ -230,6 +231,13 @@ namespace Cdc.Mmg.Validator.WebApi.Models
         ///  variable is not considered part of a repeating group and will not be processed as such.
         /// </summary>
         public string hL7RepeatingGroupElement { get; set; } = string.Empty;//
+
+        public Priority priority { get; set; } = Priority.Optional;
+
+        /// <summary>
+        /// Gets/sets the type of HL7 segment to which this data element belongs
+        /// </summary>
+        public SegmentType? hL7SegmentType { get; set; }
 
     }
 }

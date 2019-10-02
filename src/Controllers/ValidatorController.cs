@@ -12,6 +12,7 @@ using System.Text;
 using System.Runtime.Serialization.Json;
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
+using Cdc.mmg.validator.WebApi.Models;
 
 namespace Cdc.Mmg.Validator.WebApi.Controllers
 {
@@ -45,11 +46,11 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
                     JObject mmg_json = JObject.Parse(mmg);
                     // get to element block
                     var elements = mmg_json["blocks"].Children()["elements"].Children().ToArray();
-                    List<string> list = new List<string>();
+                    // List<string> list = new List<string>();
                     List<DataElement> mmgElementList = new List<DataElement>();
                     foreach (var element in elements)
                     {
-                          mmgElementList.Add(SetDataElement( element));
+                        mmgElementList.Add(SetDataElement( element));
                     }
 
                     Message message = new Message(HL7);
@@ -62,40 +63,99 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
                    // List of Segments
                     List<Segment> segList = message.Segments("OBX");
                     var FieldValue = string.Empty;
-                    // selecting a specific segment 
+
+                    // check to make sure each required data element has a matching segment
+
+                    /* TODO: Also, we must validate the following non-OBX segment types:
+                     * NTE
+                     * NK1
+                     * PID
+                     * MSH
+                     * SPM
+                     * OBR
+                     * PV1
+                    */
+                    foreach (var element in mmgElementList
+                        .Where(e => e.hL7SegmentType.HasValue && e.hL7SegmentType.Value == SegmentType.OBX) // todo: Refactor the two AND statements
+                        .Where(e => e.priority == Priority.Required))
+                    {
+                        // check to see if a corresponding segment exists
+                        var elementId = element.hL7Identifier;
+                        var segment = segList.Where(s => s.Fields(3).Components(1).Value.Equals(elementId)).FirstOrDefault();
+                        if (segment == null)
+                        {
+                            ErrorList.Add($"Error:A required element ({elementId}) wasn't found in the HL7 message");
+                        }
+                    }
+
+                    // selecting a specific segment
                     foreach (var segment in segList)
                     {
-                    try
-                    { 
-                          FieldValue = segment.Fields(3).Components(1).Value; //   Api call
-                    }
+                        try
+                        { 
+                            FieldValue = segment.Fields(3).Components(1).Value; //   Api call
+                        }
                         catch (Exception ex)
-                    {
-
-                        ErrorList.Add("Error:MMG section does not exist for HL7 Identifier: " + FieldValue);
-                    }
-
-
-                    try
                         {
-                             
-                            
-                                var Item = mmgElementList.Where(x => x.hL7Identifier == FieldValue).Single();
+                            ErrorList.Add("Error:MMG section does not exist for HL7 Identifier: " + FieldValue);
+                        }
 
+                        try
+                        {
+                            var Item = mmgElementList.Where(x => x.hL7Identifier == FieldValue).FirstOrDefault();
+                            if (Item == null)
+                            {
+                                // is this an error or a warning? This is a segment that came through but that doesn't have a matching data element
+                                continue;
+                            }
 
                             // validate data type 
-                                var   List = ValidateDataType(FieldValue, segment, Item);
-                                ErrorList.AddRange(List);
+                            var List = ValidateDataType(FieldValue, segment, Item);
+                            ErrorList.AddRange(List);
 
-                           
+                            // validate related data elements (such as OBX-6)
 
+                            foreach (var relatedElement in mmgElementList.Where(e => e.relatedDataElementId == Item.id))
+                            {
+                                var relatedElementPosition = relatedElement.hL7SegmentFieldPosition;
+
+                                if (relatedElementPosition <= 5 || relatedElementPosition > 25)
+                                {
+                                    // this should never happen for OBX, so add an error to the error list
+                                    continue;
+                                }
+
+                                var relatedData = segment.Fields(relatedElementPosition).Components(1).Value; // TODO: Test to see what happens if you go out of bounds
+
+                                if (relatedElement.priority == Priority.Required && string.IsNullOrWhiteSpace(relatedData))
+                                {
+                                    // add an error for missing required data
+                                }
+                                else
+                                {
+                                    var errorsForRelatedElement = ValidateDataType($"OBX-{relatedElementPosition} value for {FieldValue}", segment, relatedElement);
+                                    ErrorList.AddRange(errorsForRelatedElement);
+                                }
+                            }
+
+                            /* This logic can be used to implement checking for repeating data elements, but the other code in this file may need
+                             some refactoring to get it integrated */
+
+                            //var field = segment.Fields(5);
+
+                            //if (field.HasRepetitions)
+                            //{
+                            //    foreach (var repeatedField in field.Repetitions())
+                            //    {
+                            //        var errorsForRelatedElement = ValidateDataType(FieldValue, segment, Item);
+                            //        ErrorList.AddRange(errorsForRelatedElement);
+                            //    }
+                            //}
 
                             //Validate codes using API
-
-
                         }
-                        catch (Exception ex) {
-
+                        catch (Exception ex) 
+                        {
                             ErrorList.Add("Error:TBD: " + FieldValue);
                         }
                        
@@ -124,20 +184,12 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
       
         private DataElement SetDataElement(  JToken element)
         {
-
             DataElement DataElement = new DataElement();
-
-            
-
-
 
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(element.ToString())))
             {
-
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(DataElement));
                 DataElement = (DataElement)deserializer.ReadObject(ms);
-
-
             }
             return DataElement;
         }
@@ -162,10 +214,8 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
             string DataType = segment.Fields(2).Value.ToString();
             if (DataType != Item.hL7DataType)
             {
-
                 ErrorList.Add("Error: Invalid Data Type. HL7 Identifier: " + FieldValue);
             }
-
 
             switch (DataType)
             {
@@ -187,6 +237,7 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
 
                         if (string.IsNullOrEmpty(ValueSetCode))
                         {
+                            // this is probably an error with the MMG itself and not the HL7 message, potentially
                             ErrorList.Add("Error: Value set code is required: HL7 Identifier: " + FieldValue);
                         }
                         else
@@ -197,12 +248,7 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
                             {
                                 using (var _client = new HttpClient())
                                 {
-
                                     var httpContent = new StringContent("", Encoding.UTF8, "application/json");
-
-
-
-                                    
 
                                     var uri = _configuration["Vocab_Api"] + ConceptCode + "&valuesetcode=" + ValueSetCode;
                                     var response1 = _client.GetAsync(uri);
@@ -264,6 +310,10 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
                     Console.WriteLine("Other");
                     break;
             }
+
+            // Check for:
+            // - An OBX-based element in a SINGLE element block shall only appear once in the HL& message. Check to make sure only 1 segment exists for these elements.
+            // - An OBX-based element that is REQUIRED shall have a corresponding OBX segment in the HL7 message
 
             return ErrorList;
         }
