@@ -7722,6 +7722,92 @@
           "hL7SampleSegment": "OBX|nn|CWE|75207-1^Stillbirth Indicator^LN||N^No^HL70136||||||F",
           "internalVersion": 0,
           "publishVersion": ""
+        },
+        {
+          "identifier": "N/A",
+          "id": "53be6949-addf-4073-b6b2-e15acfe7f50b",
+          "comments": "",
+          "createdBy": "",
+          "ownedBy": "",
+          "state": "Final",
+          "name": "Stillbirth Indicator",
+          "description": "Is this case classified as Syphilitic Stillbirth?",
+          "dataType": "Coded",
+          "guideId": "0980ed3e-d888-4ac5-a5aa-60b359260e91",
+          "guideName": "Congenital Syphilis",
+          "businessRules": "",
+          "valueSet": {
+            "id": "6983b3a0-607f-dd11-b38d-00188b398520",
+            "code": "PHVS_YesNoUnknown_CDC",
+            "name": "Yes No Unknown (YNU)",
+            "version": 0,
+            "oid": "2.16.840.1.114222.4.11.888",
+            "concepts": [
+              {
+                "code": "N",
+                "name": "No",
+                "label": "N - No",
+                "preferredName": "No",
+                "codeSystemOID": "2.16.840.1.113883.12.136",
+                "hL70396Identifier": "HL70136",
+                "sequence": 0
+              },
+              {
+                "code": "UNK",
+                "name": "unknown",
+                "label": "UNK - Unknown",
+                "preferredName": "Unknown",
+                "codeSystemOID": "2.16.840.1.113883.5.1008",
+                "hL70396Identifier": "NULLFL",
+                "sequence": 0
+              },
+              {
+                "code": "Y",
+                "name": "Yes",
+                "label": "Y - Yes",
+                "preferredName": "Yes",
+                "codeSystemOID": "2.16.840.1.113883.12.136",
+                "hL70396Identifier": "HL70136",
+                "sequence": 0
+              }
+            ]
+          },
+          "values": [],
+          "defaultValues": [
+            {
+              "repeatingGroupId": 1,
+              "value": "",
+              "label": "",
+              "originalText": ""
+            }
+          ],
+          "isUnitOfMeasure": false,
+          "ordinal": 7,
+          "lastUpdatedDate": "2019-03-21T15:40:14.713Z",
+          "phinVariableCodeSystem": "N/A",
+          "hL7Identifier": "75217-1",
+          "codeSystem": "LN",
+          "priority": "R",
+          "repetitions": 1,
+          "valueSetName": "Yes No Unknown (YNU)",
+          "category": "Clinical",
+          "hL7LiteralFieldValues": {},
+          "hL7OBRParent": 1,
+          "hL7SegmentType": "OBX",
+          "hL7SegmentFieldPosition": 5,
+          "hL7SegmentComponentPosition": -1,
+          "valueSetURL": "https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.888",
+          "valueSetOID": "2.16.840.1.114222.4.11.888",
+          "valueSetCode": "PHVS_YesNoUnknown_CDC",
+          "hL7MessageContext": "OBX segment with\nOBX-3.1=75217-1\nOBX-5=value from value set",
+          "hL7DataType": "ST",
+          "hL7Usage": "R",
+          "hL7Cardinality": "[1..1]",
+          "hL7ImplementationNotes": "",
+          "hL7RepeatingGroupElement": "NO",
+          "hL7SampleSegment": "OBX|nn|CWE|75217-1^Stillbirth Indicator^LN||N^No^HL70136||||||F",
+          "internalVersion": 0,
+          "publishVersion": ""
         }
       ],
       "repetitionsForDisplayPurposes": 1
