@@ -81,11 +81,19 @@ namespace Cdc.Mmg.Validator.WebApi.Controllers
                      * PV1
                     */
                     ErrorList.AddRange(_validator.ValidateOBX(message.Segments("OBX"), mmgElementList, _configuration["Vocab_Api"]));
-                    
+                    ErrorList.AddRange(_validator.ValidateNTE(message.Segments("NTE"), mmgElementList, _configuration["Vocab_Api"]));
+                    ErrorList.AddRange(_validator.ValidateNK1(message.Segments("NK1"), mmgElementList, _configuration["Vocab_Api"]));
+                    ErrorList.AddRange(_validator.ValidatePID(message.Segments("PID"), mmgElementList, _configuration["Vocab_Api"]));
+                    ErrorList.AddRange(_validator.ValidateMSH(message.Segments("MSH"), mmgElementList, _configuration["Vocab_Api"]));
+                    ErrorList.AddRange(_validator.ValidateSPM(message.Segments("SPM"), mmgElementList, _configuration["Vocab_Api"]));
+                    ErrorList.AddRange(_validator.ValidateOBR(message.Segments("OBR"), mmgElementList, _configuration["Vocab_Api"]));
+                    ErrorList.AddRange(_validator.ValidatePV1(message.Segments("PV1"), mmgElementList, _configuration["Vocab_Api"]));
 
 
 
-               
+
+
+
             }
 
             if (ErrorList.Count()>0)

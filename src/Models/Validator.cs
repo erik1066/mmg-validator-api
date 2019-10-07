@@ -114,7 +114,48 @@ namespace Cdc.mmg.validator.WebApi.Models
 
 
         }
+        public List<string> ValidateNK1(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
 
+        }
+        public List<string> ValidateNTE(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
+
+        }
+        public List<string> ValidatePID(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
+
+        }
+        public List<string> ValidateMSH(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
+
+        }
+        public List<string> ValidateSPM(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
+
+        }
+        public List<string> ValidateOBR(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
+
+        }
+        public List<string> ValidatePV1(List<Segment> segList, List<DataElement> mmgElementList, string ApiUri)
+        {
+            List<string> List = new List<string>();
+            return List;
+
+        }
 
         private List<string> ValidateDataType(string FieldValue, Segment segment, DataElement Item, string ApiUri)
         {
