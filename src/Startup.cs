@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Cdc.Mmg.Validator.WebApi.Formatters;
 using AutoMapper;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Cdc.mmg.validator.WebApi.Interfaces;
 
 namespace Cdc.Mmg.Validator.WebApi
 {
@@ -80,8 +81,8 @@ namespace Cdc.Mmg.Validator.WebApi
                 options.InputFormatters.Insert(0, new TextPlainInputFormatter());
             });
 
-           
 
+            services.AddSingleton<IValidator, Cdc.mmg.validator.WebApi.Models.Validator>();
             // register the repository
             // services.AddScoped<IValueSetRepository, ValueSetRepository>();
         }
